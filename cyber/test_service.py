@@ -45,7 +45,7 @@ class CyberServiceTests(unittest.TestCase):
         with patch("cyber.service.execute_authorized_get", return_value=fake_result):
             consumed = self.service.consume_authorization(auth["id"], self.finding["id"], "controlled_non_destructive_poc")
         self.assertTrue(consumed["authorized"])
-        self.assertEqual(consumed["finding"]["status"], "verified")
+        self.assertEqual(consumed["finding"]["status"], "VERIFIED")
 
 
 if __name__ == "__main__":
