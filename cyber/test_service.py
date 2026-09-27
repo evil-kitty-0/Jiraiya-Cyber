@@ -31,7 +31,7 @@ class CyberServiceTests(unittest.TestCase):
     def test_approval_then_consume(self):
         auth = self.service.request_authorization(self.finding["id"])
         approved = self.service.authorize(auth["id"])
-        self.assertTrue(approved.as_dict()["active"])
+        self.assertTrue(approved["active"])
         fake_result = {
             "finding_id": self.finding["id"],
             "target": "https://example.com/app/test",
