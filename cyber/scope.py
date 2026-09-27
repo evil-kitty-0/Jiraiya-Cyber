@@ -18,7 +18,7 @@ class Scope:
     program: str
     allowed_hosts: tuple[str, ...]
     excluded_hosts: tuple[str, ...] = ()
-    allowed_paths: tuple[str, ...] = ("/",)
+    allowed_paths: tuple[str, ...] = ("/*",)
     excluded_paths: tuple[str, ...] = ()
     notes: str = ""
 
