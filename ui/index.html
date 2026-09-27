@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jiraiya AI</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="app">
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="brand">
+                <div class="logo">🐸</div>
+                <div>
+                    <h1>Jiraiya</h1>
+                    <span>AI Assistant</span>
+                </div>
+            </div>
+
+            <button class="new-chat" id="newChatBtn">
+                <span>＋</span>
+                <span>New chat</span>
+            </button>
+
+            <div class="sidebar-section">
+                <div class="section-title">Chats</div>
+                <div id="chatHistory" class="chat-history"></div>
+            </div>
+
+            <div class="sidebar-bottom">
+                <div class="status">
+                    <span class="status-dot"></span>
+                    <span>Jiraiya online</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main -->
+        <main class="main">
+
+            <!-- Header -->
+            <header class="topbar">
+                <button class="mobile-menu" id="menuBtn">☰</button>
+
+                <div class="model-info">
+                    <strong>Jiraiya</strong>
+                    <span>Qwen2.5 Coder 1.5B</span>
+                </div>
+
+                <button class="settings-btn" title="Settings">⚙</button>
+            </header>
+
+            <!-- Cyber Security Panel -->
+            <section class="cyber-panel" id="cyberPanel" aria-label="Jiraiya Cyber">
+                <div class="cyber-panel-header">
+                    <div>
+                        <strong>🛡️ JIRAIYA CYBER</strong>
+                        <span>Authorization-first security testing</span>
+                    </div>
+                    <button id="cyberCloseBtn" class="cyber-close" title="Close">×</button>
+                </div>
+
+                <div class="cyber-scope-card">
+                    <h3>Authorized scope</h3>
+                    <input id="cyberProgram" placeholder="Program name">
+                    <input id="cyberHosts" placeholder="Allowed hosts (comma separated)">
+                    <input id="cyberPaths" placeholder="Allowed paths, e.g. /api/*,/app/*">
+                    <button id="cyberScopeBtn" class="cyber-primary">Save scope</button>
+                    <button id="cyberReconBtn" class="cyber-secondary" style="width:100%;margin-top:7px;">Run scoped recon</button>
+                    <input id="cyberReconUrls" placeholder="Authorized URLs (comma separated)">
+                    <div id="cyberScopeStatus" class="cyber-status-text">No scope configured.</div>
+                </div>
+
+                <div class="cyber-findings-head">
+                    <h3>Findings</h3>
+                    <button id="cyberRefreshBtn" class="cyber-secondary">Refresh</button>
+                </div>
+                <div id="cyberFindings" class="cyber-findings"></div>
+            </section>
+
+            <!-- Chat -->
+            <section class="chat-area" id="chatArea">
+
+                <div class="welcome" id="welcome">
+                    <div class="welcome-logo">🐸</div>
+                    <h2>Namaste, I'm Jiraiya.</h2>
+                    <p>How can I help you today?</p>
+
+                    <div class="suggestions">
+                        <button data-prompt="Explain something to me">
+                            💡 Explain something
+                        </button>
+
+                        <button data-prompt="Help me write some code">
+                            💻 Help me code
+                        </button>
+
+                        <button data-prompt="Search the web for something">
+                            🌐 Search the web
+                        </button>
+
+                        <button data-prompt="Calculate something for me">
+                            🧮 Calculate
+                        </button>
+                    </div>
+                </div>
+
+            </section>
+
+            <!-- Input -->
+            <div class="composer-wrapper">
+                <div class="composer">
+
+                    <button class="attach-btn" title="Attach file">
+                        ＋
+                    </button>
+
+                    <textarea
+                        id="messageInput"
+                        rows="1"
+                        placeholder="Message Jiraiya..."
+                        autocomplete="off"
+                    ></textarea>
+
+                    <button class="send-btn" id="sendBtn" title="Send">
+                        ➤
+                    </button>
+
+                </div>
+
+                <div class="disclaimer">
+                    Jiraiya can make mistakes. Check important information.
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+
+    <div class="cyber-modal" id="cyberAuthModal" role="dialog" aria-modal="true">
+        <div class="cyber-modal-card">
+            <h2>🔐 Authorize controlled PoC</h2>
+            <p><strong>Finding:</strong> <span id="cyberModalTitle"></span></p>
+            <p><strong>Target:</strong> <span id="cyberModalTarget"></span></p>
+            <p><strong>Action:</strong> <span id="cyberModalAction"></span></p>
+            <p>This approval is scoped to this exact finding, target and action. It expires automatically and is single-use by default.</p>
+            <div class="cyber-modal-actions">
+                <button id="cyberModalCancel" class="cyber-cancel">Cancel</button>
+                <button id="cyberModalApprove" class="cyber-approve">AUTHORIZE</button><button id="cyberModalExecute" class="cyber-primary" style="display:none;">RUN AUTHORIZED CHECK</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+
+</body>
+</html>
