@@ -1,0 +1,49 @@
+# Secrets
+.env
+*.env
+**/master.key
+
+# Private encrypted/runtime data
+**/memory/*.db.enc
+**/knowledge/*.db
+sessions/sessions.json
+
+# Local models
+models/*.gguf
+**/models/*.gguf
+
+# Python cache
+__pycache__/
+**/__pycache__/
+*.pyc
+
+# Runtime logs and PIDs
+*.log
+*.pid
+
+# Backup files
+*.bak
+*.backup
+*.backup*
+*.before_*
+*.webbackup
+*.dd-backup
+*.ddg-backup
+
+# Self-improvement generated archives
+self_improvement/backups/
+self_improvement/sandbox/
+self_improvement/versions/
+
+# Temporary development files
+agent.y
+new_ask_web.txt
+replace_web.py
+self_improvement/tmp_*.json
+self_improvement/*.tmp
+
+# OS/editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
