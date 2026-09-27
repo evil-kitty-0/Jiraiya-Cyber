@@ -1,0 +1,16 @@
+{
+  "coder": {
+    "name": "Qwen2.5 Coder 1.5B",
+    "file": "qwen2.5-coder-1.5b-q4.gguf",
+    "context": 8192,
+    "threads": 6,
+    "max_tokens": 400
+  },
+  "general": {
+    "name": "Qwen3 0.6B",
+    "file": "qwen3-0.6b-q4_k_m.gguf",
+    "context": 8192,
+    "threads": 6,
+    "max_tokens": 400
+  }
+}
