@@ -77,3 +77,6 @@ class AuthorizationManager:
     def get(self, authorization_id: str) -> dict | None:
         record = self._records.get(authorization_id)
         return record.as_dict() if record else None
+
+    def get_record(self, authorization_id: str) -> Authorization | None:
+        return self._records.get(authorization_id)
