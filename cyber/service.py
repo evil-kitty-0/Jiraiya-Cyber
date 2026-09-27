@@ -25,7 +25,7 @@ class CyberService:
             program=str(data.get("program", "")).strip(),
             allowed_hosts=tuple(str(x).strip().lower() for x in data.get("allowed_hosts", []) if str(x).strip()),
             excluded_hosts=tuple(str(x).strip().lower() for x in data.get("excluded_hosts", []) if str(x).strip()),
-            allowed_paths=tuple(data.get("allowed_paths", ["/"])),
+            allowed_paths=tuple(data.get("allowed_paths", ["/*"])),
             excluded_paths=tuple(data.get("excluded_paths", [])),
             notes=str(data.get("notes", "")),
         )
@@ -67,11 +67,15 @@ class CyberService:
 
     def consume_authorization(self, authorization_id: str, finding_id: str, action: str) -> dict:
         finding = self._finding(finding_id)
-        record = self.authorization.get(authorization_id)
+        record = self.authorization.get_record(authorization_id)
         if record is None:
             raise AuthorizationError("authorization not found")
         if record.action != action:
             raise AuthorizationError("authorization action mismatch")
+        if record.finding_id != finding.id:
+            raise AuthorizationError("authorization finding mismatch")
+        if record.target != finding.target:
+            raise AuthorizationError("authorization target mismatch")
         if not record.active():
             raise AuthorizationError("authorization is not active")
         result = execute_authorized_get(finding, record)
