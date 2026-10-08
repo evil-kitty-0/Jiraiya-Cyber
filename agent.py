@@ -10,6 +10,12 @@ import urllib.request
 import urllib.error
 from pathlib import Path
 
+try:
+    from freellmapi_client import chat as freellmapi_chat, configured as freellmapi_configured
+except Exception:
+    freellmapi_chat = None
+    freellmapi_configured = lambda: False
+
 
 # ============================================================
 # PATHS
@@ -525,6 +531,27 @@ def ask_model(
     system_prompt=None,
     max_tokens=400
 ):
+
+    if freellmapi_chat and freellmapi_configured():
+        messages = []
+        if system_prompt:
+            messages.append({"role": "system", "content": system_prompt})
+        try:
+            import importlib.util
+            _mc_file = MEMORY_DIR / "memory_context.py"
+            _mc_spec = importlib.util.spec_from_file_location("jiraiya_memory_context_remote", _mc_file)
+            _mc_module = importlib.util.module_from_spec(_mc_spec)
+            _mc_spec.loader.exec_module(_mc_module)
+            remote_memory_context = _mc_module.get_memory_context(message, limit=3)
+        except Exception:
+            remote_memory_context = ""
+        if remote_memory_context:
+            messages.append({"role": "system", "content": remote_memory_context})
+        messages.append({"role": "user", "content": message})
+        try:
+            return freellmapi_chat(messages, max_tokens=max_tokens, temperature=0.2, timeout=300)
+        except Exception as remote_error:
+            print(f"⚠️ FreeLLMAPI unavailable, using local model: {remote_error}")
 
     payload = {
         "messages": []
@@ -1445,7 +1472,12 @@ def main():
         "====================================\n"
     )
 
-    if not SERVER_BIN.exists():
+    if freellmapi_configured():
+        print("☁️ FreeLLMAPI backend enabled.")
+        print("🧠 Inference will be routed by FreeLLMAPI.")
+        print("💻 No local GGUF model is required for normal chat.\n")
+
+    elif not SERVER_BIN.exists():
 
         print(
             "❌ llama-server not found:"
@@ -1463,7 +1495,10 @@ def main():
 
     pid = read_pid()
 
-    if (
+    if freellmapi_configured():
+        pid = None
+
+    elif (
         pid
         and pid_alive(pid)
         and server_healthy()
