@@ -8,6 +8,12 @@ import subprocess
 from datetime import datetime
 from pathlib import Path
 
+try:
+    from freellmapi_client import chat as freellmapi_chat, configured as freellmapi_configured
+except Exception:
+    freellmapi_chat = None
+    freellmapi_configured = lambda: False
+
 
 BASE = Path(__file__).resolve().parents[1]
 SELF_DIR = BASE / "self_improvement"
@@ -37,9 +43,23 @@ def load_json(path):
 
 def load_architecture():
     if not ARCH_FILE.exists():
-        raise FileNotFoundError(
-            f"Architecture file not found:\n{ARCH_FILE}"
-        )
+        architecture_module = SELF_DIR / "architecture.py"
+        if architecture_module.exists():
+            result = subprocess.run(
+                [sys.executable, str(architecture_module)],
+                cwd=str(BASE),
+                capture_output=True,
+                text=True,
+            )
+            if result.returncode != 0 or not ARCH_FILE.exists():
+                raise RuntimeError(
+                    "Could not generate architecture metadata.\n"
+                    + (result.stdout + result.stderr)[-2000:]
+                )
+        else:
+            raise FileNotFoundError(
+                f"Architecture file not found:\n{ARCH_FILE}"
+            )
 
     return load_json(ARCH_FILE)
 
@@ -131,6 +151,18 @@ def architecture_summary(architecture):
 
 
 def server_healthy():
+    if freellmapi_chat and freellmapi_configured():
+        try:
+            freellmapi_chat(
+                [{"role": "user", "content": "health check"}],
+                max_tokens=8,
+                temperature=0.0,
+                timeout=10,
+            )
+            return True
+        except Exception:
+            pass
+
     try:
         request = urllib.request.Request(
             f"{SERVER_URL}/health",
@@ -148,6 +180,20 @@ def server_healthy():
 
 
 def ask_llm(system_prompt, user_prompt):
+    if freellmapi_chat and freellmapi_configured():
+        try:
+            return freellmapi_chat(
+                [
+                    {"role": "system", "content": system_prompt},
+                    {"role": "user", "content": user_prompt},
+                ],
+                max_tokens=MAX_TOKENS,
+                temperature=0.0,
+                timeout=180,
+            )
+        except Exception as exc:
+            print(f"⚠️ FreeLLMAPI unavailable for self-improvement; using local fallback: {exc}")
+
     payload = {
         "model": MODEL,
         "messages": [
