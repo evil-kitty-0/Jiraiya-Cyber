@@ -21,7 +21,7 @@ except Exception:
 # PATHS
 # ============================================================
 
-BASE = Path.home() / "jiraiya"
+BASE = Path(__file__).resolve().parent
 
 MODEL_MANAGER = BASE / "model_manager.py"
 MODELS_JSON = BASE / "models" / "models.json"
